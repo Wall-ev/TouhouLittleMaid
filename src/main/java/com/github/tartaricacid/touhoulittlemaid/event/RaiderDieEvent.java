@@ -30,7 +30,7 @@ public class RaiderDieEvent {
             return;
         }
 
-        if (!(maid.isTame() && maid.getOwner() instanceof Player owner)) {
+        if (!(maid.isTame() && maid.getOwner() instanceof Player owner && owner.isAlive())) {
             return;
         }
 
