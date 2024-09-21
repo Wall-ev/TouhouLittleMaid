@@ -1,5 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.compat.cloth;
 
+import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.api.ILittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.config.subconfig.ChairConfig;
 import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MaidConfig;
 import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MiscConfig;
@@ -32,6 +34,7 @@ public class MenuIntegration {
         chairConfig(root, entryBuilder);
         miscConfig(root, entryBuilder);
         vanillaConfig(root, entryBuilder);
+        addAdditionConfig(root, entryBuilder);
         return root;
     }
 
@@ -180,7 +183,7 @@ public class MenuIntegration {
                 .setSaveConsumer(i -> MaidConfig.MAID_GUN_NEAR_DISTANCE.set(i)).build());
     }
 
-    private static void chairConfig(ConfigBuilder root, ConfigEntryBuilder entryBuilder) {
+    public static void chairConfig(ConfigBuilder root, ConfigEntryBuilder entryBuilder) {
         ConfigCategory chair = root.getOrCreateCategory(Component.translatable("config.touhou_little_maid.chair"));
         chair.addEntry(entryBuilder.startBooleanToggle(Component.translatable("config.touhou_little_maid.chair.chair_change_model"), ChairConfig.CHAIR_CHANGE_MODEL.get())
                 .setDefaultValue(true).setTooltip(Component.translatable("config.touhou_little_maid.chair.chair_change_model.tooltip"))
@@ -251,7 +254,7 @@ public class MenuIntegration {
                 .setSaveConsumer(MiscConfig.USE_NEW_MAID_FAIRY_MODEL::set).build());
     }
 
-    private static void vanillaConfig(ConfigBuilder root, ConfigEntryBuilder entryBuilder) {
+    public static void vanillaConfig(ConfigBuilder root, ConfigEntryBuilder entryBuilder) {
         ConfigCategory vanilla = root.getOrCreateCategory(Component.translatable("config.touhou_little_maid.vanilla"));
 
         vanilla.addEntry(entryBuilder.startBooleanToggle(Component.translatable("config.touhou_little_maid.vanilla.replace_slime_model"), VanillaConfig.REPLACE_SLIME_MODEL.get())
@@ -269,6 +272,12 @@ public class MenuIntegration {
         vanilla.addEntry(entryBuilder.startBooleanToggle(Component.translatable("config.touhou_little_maid.vanilla.replace_xp_bottle_texture"), VanillaConfig.REPLACE_XP_BOTTLE_TEXTURE.get())
                 .setDefaultValue(true).setTooltip(Component.translatable("config.touhou_little_maid.vanilla.replace_xp_bottle_texture.tooltip"))
                 .setSaveConsumer(VanillaConfig.REPLACE_XP_BOTTLE_TEXTURE::set).build());
+    }
+
+    private static void addAdditionConfig(ConfigBuilder root, ConfigEntryBuilder entryBuilder) {
+        for (ILittleMaid littleMaid : TouhouLittleMaid.EXTENSIONS) {
+            littleMaid.addClothConfigEntry(root, entryBuilder);
+        }
     }
 
     public static void registerModsPage() {
